@@ -8,13 +8,14 @@ FROM python:3.6-stretch
 #ENV TINI_VERSION v0.6.0
 #ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 #RUN chmod +x /usr/bin/tini
-
-RUN apt-get update && apt-get remove ipython && apt-get install -y \
-    python3-dev \
-    ca-certificates \
-    curl \
-	gpg \
-	libgdal-dev
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
+    apt-get update && apt-get remove ipython && apt-get install -y \
+        python3-dev \
+        ca-certificates \
+        curl \
+    	gpg \
+	    libgdal-dev \
+        nodejs
 
 # The gosu and entrypoint magic is used to create an unprivileged user
 # at `docker run`-time with the same uid as the host user. Thus, the mounted
@@ -46,10 +47,12 @@ RUN pip install --global-option=build_ext --global-option="-I/usr/include/gdal" 
 COPY requirements.txt /tmp/
 RUN pip install -r /tmp/requirements.txt && \
     pip install --force-reinstall --no-cache-dir jupyter && \
-    pip freeze
+    pip freeze && \
+    jupyter labextension install @jupyterlab/geojson-extension
 
 WORKDIR /home/user
 
 EXPOSE 8888
-CMD ["jupyter", "notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0"]
+#CMD ["jupyter", "notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0"]
+CMD ["jupyter", "lab", "--port=8888", "--no-browser", "--ip=0.0.0.0"]
 

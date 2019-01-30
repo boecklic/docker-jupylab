@@ -1,11 +1,18 @@
 DOCKER = docker
+DOCKERHUB_USER = boecklic
 PWD := $(shell pwd)
 LOCAL_UID := $(shell id -u $$USER)
 CMD ?= 
 
 .PHONY: build
 build:
-	$(DOCKER) build -t jupytest .
+	$(DOCKER) build -t jupylab .
+
+.PHONY: push
+push: build
+	$(DOCKER) tag jupylab\:latest $(DOCKERHUB_USER)/jupylab\:latest
+	$(DOCKER) push $(DOCKERHUB_USER)/jupylab\:latest
+
 
 .PHONY: run
 run:
@@ -18,4 +25,4 @@ run:
 	#   the container
 	$(DOCKER) run -it --init -p 8888:8888 \
 		-e LOCAL_UID=$(LOCAL_UID) \
-		-v $(PWD):/home/user jupytest $(CMD)
+		-v $(PWD):/home/user boecklic/jupylab\:latest $(CMD)

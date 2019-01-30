@@ -1,4 +1,5 @@
 ipykernel==5.1.0
+jupyterlab
 # OWSLib requires python-dev
 OWSLib==0.17.0
 plotly==3.4.2
