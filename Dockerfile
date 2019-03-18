@@ -15,15 +15,19 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
         curl \
     	gpg \
 	    libgdal-dev \
-        nodejs
+        nodejs && \
+    apt-get clean
 
+# Create unprivileged user
+# ------------------------
 # The gosu and entrypoint magic is used to create an unprivileged user
 # at `docker run`-time with the same uid as the host user. Thus, the mounted
 # host volume has the correct uid:guid permissions. For details:
 # https://denibertovic.com/posts/handling-permissions-with-docker-volumes/
 # Note: the --no-tty is necessary due to a bug
 # https://github.com/nodejs/docker-node/issues/922
-RUN gpg --no-tty --keyserver pgp.mit.edu --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
+#RUN gpg --no-tty --keyserver pgp.mit.edu --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
+RUN gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
 RUN curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.4/gosu-$(dpkg --print-architecture)" \
     && curl -o /usr/local/bin/gosu.asc -SL "https://github.com/tianon/gosu/releases/download/1.4/gosu-$(dpkg --print-architecture).asc" \
     && gpg --verify /usr/local/bin/gosu.asc \
@@ -34,6 +38,7 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
 
 # Install required python dependencies
 # ------------------------------------

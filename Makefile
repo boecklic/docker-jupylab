@@ -6,7 +6,7 @@ CMD ?=
 
 .PHONY: build
 build:
-	$(DOCKER) build -t jupylab .
+	$(DOCKER) build -t $(DOCKERHUB_USER)/jupylab\:latest .
 
 .PHONY: push
 push: build
@@ -25,4 +25,4 @@ run:
 	#   the container
 	$(DOCKER) run -it --init -p 8888:8888 \
 		-e LOCAL_UID=$(LOCAL_UID) \
-		-v $(PWD):/home/user boecklic/jupylab\:latest $(CMD)
+		-v $(PWD):/home/user $(DOCKERHUB_USER)/jupylab\:latest $(CMD)
