@@ -9,3 +9,4 @@ psycopg2-binary
 shapely
 geopandas
 mapbox-vector-tile
+seaborn

@@ -10,7 +10,7 @@ build:
 
 .PHONY: push
 push: build
-	$(DOCKER) tag jupylab\:latest $(DOCKERHUB_USER)/jupylab\:latest
+	$(DOCKER) tag $(DOCKERHUB_USER)/jupylab\:latest $(DOCKERHUB_USER)/jupylab\:latest
 	$(DOCKER) push $(DOCKERHUB_USER)/jupylab\:latest
 
 

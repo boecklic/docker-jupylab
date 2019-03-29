@@ -15,8 +15,15 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
         curl \
     	gpg \
 	    libgdal-dev \
-        nodejs && \
+        nodejs \
+        pandoc \
+        texlive-xetex && \
     apt-get clean
+
+# install pandoc
+#RUN wget -o /tmp/pandoc-2.7.1.deb https://github.com/jgm/pandoc/releases/download/2.7.1/pandoc-2.7.1-1-amd64.deb && \
+#    dpkg -i /tmp/pandoc-2.7.1.deb && \
+#    rm /tmp/pandoc-2.7.1.deb
 
 # Create unprivileged user
 # ------------------------
@@ -49,11 +56,15 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 RUN pip install --global-option=build_ext --global-option="-I/usr/include/gdal" GDAL==$(gdal-config --version | awk -F'[.]' '{print $1"."$2}')
 
 # Install what's in requirements.txt
+# and some other extensions:
+# - geojson-extension:
+# - drawio: create and edit draw.io drawings directly in jupyterlab
 COPY requirements.txt /tmp/
 RUN pip install -r /tmp/requirements.txt && \
     pip install --force-reinstall --no-cache-dir jupyter && \
     pip freeze && \
-    jupyter labextension install @jupyterlab/geojson-extension
+    jupyter labextension install @jupyterlab/geojson-extension && \
+    jupyter labextension install jupyterlab-drawio
 
 WORKDIR /home/user
 
