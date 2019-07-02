@@ -26,3 +26,7 @@ run:
 	$(DOCKER) run -it --init -p 8888:8888 \
 		-e LOCAL_UID=$(LOCAL_UID) \
 		-v $(PWD):/home/user $(DOCKERHUB_USER)/jupylab\:latest $(CMD)
+
+.PHONY: login
+login:
+	$(DOCKER) exec -it $(DOCKERHUB_USER)/jupylab\:latest /bin/bash

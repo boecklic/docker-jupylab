@@ -1,5 +1,5 @@
 ipykernel==5.1.0
-jupyterlab
+jupyterlab==0.35.6
 # OWSLib requires python-dev
 OWSLib==0.17.0
 plotly==3.4.2
@@ -10,3 +10,5 @@ shapely
 geopandas
 mapbox-vector-tile
 seaborn
+jupyter_contrib_nbextensions
+display_xml

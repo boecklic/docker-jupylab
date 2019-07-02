@@ -8,6 +8,9 @@ FROM python:3.6-stretch
 #ENV TINI_VERSION v0.6.0
 #ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
 #RUN chmod +x /usr/bin/tini
+# libxss-dev, libatk-bridge2, libgtk used for drawio-batch (convert drawio to svg)
+# libasound used for chrome
+#
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
     apt-get update && apt-get remove ipython && apt-get install -y \
         python3-dev \
@@ -17,8 +20,12 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
 	    libgdal-dev \
         nodejs \
         pandoc \
-        texlive-xetex && \
-    apt-get clean
+        texlive-xetex \
+        libxss-dev \
+        libatk-bridge2.0-dev \
+        libgtk-3-0 \
+        libasound2 \
+    && apt-get clean
 
 # install pandoc
 #RUN wget -o /tmp/pandoc-2.7.1.deb https://github.com/jgm/pandoc/releases/download/2.7.1/pandoc-2.7.1-1-amd64.deb && \
@@ -62,9 +69,18 @@ RUN pip install --global-option=build_ext --global-option="-I/usr/include/gdal" 
 COPY requirements.txt /tmp/
 RUN pip install -r /tmp/requirements.txt && \
     pip install --force-reinstall --no-cache-dir jupyter && \
-    pip freeze && \
+    pip freeze
+RUN npm list --depth=1 -g && \
     jupyter labextension install @jupyterlab/geojson-extension && \
-    jupyter labextension install jupyterlab-drawio
+    jupyter labextension install jupyterlab-drawio && \
+    jupyter contrib nbextension install --system
+
+# Install drawio-batch
+# --------------------
+RUN git clone https://github.com/languitar/drawio-batch.git /tmp/drawio-batch \
+    && cd /tmp/drawio-batch \
+    && npm install && npm install -g
+
 
 WORKDIR /home/user
 
