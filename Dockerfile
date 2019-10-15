@@ -94,6 +94,7 @@ RUN pip install setuptools \
 # and some other extensions:
 # - geojson-extension:
 # - drawio: create and edit draw.io drawings directly in jupyterlab
+# - celltags: tag cells (e.g. with 'hidden' to exclude from export)
 COPY requirements.txt /tmp/
 RUN pip install -r /tmp/requirements.txt && \
     pip install --force-reinstall --no-cache-dir jupyter && \
