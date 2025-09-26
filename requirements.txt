@@ -1,5 +1,5 @@
 ipykernel==5.1.0
-jupyterlab==3.6.8
+jupyterlab==4.4.8
 #jupyterlab==1.0.1
 # OWSLib requires python-dev
 OWSLib==0.28.1
